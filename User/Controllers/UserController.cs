@@ -22,7 +22,6 @@ namespace User.Controllers
             _client = client;
         }
 
-        // GET: api/<ValuesController>
         [HttpPost("/SignUp")]
         public IActionResult SignUp([FromBody] UserDTO user)
         {
@@ -40,15 +39,8 @@ namespace User.Controllers
 
         }
 
-        // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // get events, it works.
-        [HttpGet("SeeEvents")]
+        [HttpGet("/SeeEvents")]
         public async Task<List<Event>> GetEvents()
         {
             //_client.BaseAddress = new Uri("https://localhost:7055/");
@@ -61,7 +53,7 @@ namespace User.Controllers
             return EmptyList;
         }
 
-        [HttpGet("JoinEvent/{eventName}/{email}")]
+        [HttpGet("/RequestToJoinEvent/{eventName}/{email}")]
         public async Task<IActionResult> JoinEvent(string eventName, string email)
         {
             var user = _userRepository.FindByEmail(email);
@@ -89,7 +81,7 @@ namespace User.Controllers
         }
 
 
-        [HttpGet("LeaveEvent/{eventName}")]
+        [HttpGet("/RequestToLeaveEvent/{eventName}/{email}")]
         public async Task<IActionResult> LeaveEvent(string email, string eventName)
         {
             var user = _userRepository.FindByEmail(email);
@@ -115,7 +107,7 @@ namespace User.Controllers
             return BadRequest("Failed.");
         }
 
-        [HttpPost("FundWallet")]
+        [HttpPost("/FundWallet")]
         public IActionResult FundWallet(FundingDTO funding)
         {
             var user = _userRepository.FindByEmail(funding.Email);
@@ -132,14 +124,6 @@ namespace User.Controllers
         // isLoggedIn
         // endpoint to fund wallet
 
-        // POST api/<ValuesController>
-        //[HttpPost]
-        //public void Login([FromBody] string value)
-        //{
-        //}
-
         // Logout
-
-        // create 
     }
 }

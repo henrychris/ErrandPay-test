@@ -32,6 +32,7 @@ namespace ErrandPay_test.Repository
             var eventAttr = _appDbContext.Events.FirstOrDefault(c => c.Name == name);
             if (eventAttr != null)
             {
+                if (eventAttr.IsAttending == true) Console.WriteLine("You already joined.");
                 eventAttr.IsAttending = true;
                 _appDbContext.SaveChanges();
                 return true;
@@ -43,6 +44,7 @@ namespace ErrandPay_test.Repository
             var eventAttr = _appDbContext.Events.FirstOrDefault(c => c.Name == name);
             if (eventAttr != null)
             {
+                if (eventAttr.IsAttending == false) Console.WriteLine("You already left.");
                 eventAttr.IsAttending = false;
                 _appDbContext.SaveChanges();
                 return true;
