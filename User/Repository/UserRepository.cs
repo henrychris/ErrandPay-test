@@ -8,7 +8,7 @@ namespace UserAPI.Repository
     {
         private readonly AppDbContext _appDbContext;
 
-        
+
 
 
         public UserRepository(AppDbContext appDbContext)
@@ -33,7 +33,7 @@ namespace UserAPI.Repository
 
         public UserObj FindByEmail(string email)
         {
-            var x =  _appDbContext.Users.FirstOrDefault(c => c.Email == email);
+            var x = _appDbContext.Users.FirstOrDefault(c => c.Email == email);
             return x == null ? null : x;
         }
 
@@ -53,11 +53,19 @@ namespace UserAPI.Repository
 
         public bool PayForEvent(Event eventAttr, UserObj user)
         {
-                        if ((user.Wallet - eventAttr.Price) < 0)
+            if ((user.Wallet - eventAttr.Price) < 0)
             {
                 return false;
             }
             user.Wallet -= eventAttr.Price;
+            _appDbContext.SaveChanges();
+            // return a tuple and new balance?
+            return true;
+        }
+
+        public bool RefundForEvent(Event eventAttr, UserObj user)
+        {
+            user.Wallet += eventAttr.Price;
             _appDbContext.SaveChanges();
             // return a tuple and new balance?
             return true;

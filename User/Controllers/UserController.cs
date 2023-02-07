@@ -61,7 +61,7 @@ namespace User.Controllers
             return EmptyList;
         }
 
-        [HttpGet("JoinEventByName/{eventName}/{email}")]
+        [HttpGet("JoinEvent/{eventName}/{email}")]
         public async Task<IActionResult> JoinEvent(string eventName, string email)
         {
             var user = _userRepository.FindByEmail(email);
@@ -90,9 +90,23 @@ namespace User.Controllers
 
 
         [HttpGet("LeaveEvent/{eventName}")]
-        public async Task<IActionResult> LeaveEvent(string eventName)
+        public async Task<IActionResult> LeaveEvent(string email, string eventName)
         {
-            // should pass the event id or name here
+            var user = _userRepository.FindByEmail(email);
+
+            var getEventResponse = await _client.GetAsync($"GetEventByName/{eventName}");
+            if (getEventResponse.IsSuccessStatusCode)
+            {
+                var eventResponse = JsonConvert.DeserializeObject<Event>(await getEventResponse.Content.ReadAsStringAsync());
+                var payResponse = _userRepository.FundWallet(user, eventResponse.Price);
+
+                return payResponse.Item1 == true ? await LeaveEvent(eventName) : BadRequest(payResponse);
+            }
+            else return BadRequest(getEventResponse);
+        }
+
+        private async Task<IActionResult> LeaveEvent(string eventName)
+        {
             var response = await _client.GetAsync($"LeaveEvent/{eventName}");
             if (response.IsSuccessStatusCode)
             {
